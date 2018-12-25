@@ -1,9 +1,10 @@
 import { css } from "@emotion/core"
 import React from "react"
 
-export function FlatButton(props: React.ComponentPropsWithoutRef<"button">) {
+function FlatButton(props: React.ComponentPropsWithoutRef<"button">) {
   return <button css={flatButtonStyle} {...props} />
 }
+export default FlatButton
 
 const flatButtonStyle = css`
   padding: 0.5rem;

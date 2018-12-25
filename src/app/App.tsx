@@ -7,7 +7,7 @@ import {
   primaryColor,
   primaryTextColor,
 } from "../style/colors"
-import { FlatButton } from "../style/FlatButton"
+import FlatButton from "../style/FlatButton"
 import { flexColumn, flexGrow, flexRow } from "../style/flex"
 import { fullHeight, spacedGrid } from "../style/helpers"
 
