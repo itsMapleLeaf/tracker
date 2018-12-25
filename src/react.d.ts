@@ -3,9 +3,12 @@ import "react"
 declare module "react" {
   export class ConcurrentMode extends Component {}
 
-  function useState<S>(): [S | void, Dispatch<SetStateAction<S | void>>]
+  function useState<S>(): [
+    S | undefined,
+    Dispatch<SetStateAction<S | undefined>>
+  ]
 
-  function useRef<T>(): MutableRefObject<T | void>
+  function useRef<T>(): MutableRefObject<T | undefined>
 
-  function createContext<V>(): Context<V | void>
+  function createContext<V>(): Context<V | undefined>
 }
