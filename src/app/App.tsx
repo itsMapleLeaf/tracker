@@ -1,8 +1,10 @@
 import { css } from "@emotion/core"
 import { mdiCheckCircle, mdiPlus, mdiSettings, mdiTrashCan } from "@mdi/js"
 import gql from "graphql-tag"
+import idx from "idx"
 import React from "react"
 import { useQuery } from "../apollo/hooks"
+import { UpcomingAnimeQuery } from "../generated/graphql"
 import { primaryColor, primaryTextColor } from "../style/colors"
 import FlatButton from "../style/FlatButton"
 import { flexColumn, flexGrow, flexRow } from "../style/flex"
@@ -38,7 +40,7 @@ function TrackedAnimeEntry() {
 }
 
 const pageQuery = gql`
-  {
+  query UpcomingAnimeQuery {
     Page(page: 0, perPage: 20) {
       media(type: ANIME, season: WINTER, seasonYear: 2019) {
         id
@@ -58,20 +60,37 @@ const pageQuery = gql`
 `
 
 function App() {
-  const { data, isLoading } = useQuery(pageQuery)
+  const { data, errors, isLoading } = useQuery<
+    UpcomingAnimeQuery.Query,
+    UpcomingAnimeQuery.Variables
+  >(pageQuery, {})
+
+  const media = idx(data, (_) => _.Page.media) || []
 
   return (
     <main css={[fullHeight]}>
       {isLoading && <p>Loading...</p>}
+
       {data ? (
         <ul css={[spacedGrid]}>
-          {data.Page.media.map((media: any) => (
+          {media.map((media: any) => (
             <li key={media.id}>
               <AnimeSummaryCard anime={media} />
             </li>
           ))}
         </ul>
       ) : null}
+
+      {errors && (
+        <>
+          <p>An error occurred:</p>
+          <ul>
+            {errors.map((error, i) => (
+              <li key={i}>{JSON.stringify(error)}</li>
+            ))}
+          </ul>
+        </>
+      )}
     </main>
   )
 }
