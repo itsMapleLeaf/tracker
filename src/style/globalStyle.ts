@@ -15,6 +15,16 @@ export default css`
     color: ${primaryTextColor};
   }
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Roboto Condensed";
+    font-weight: 300;
+  }
+
   button,
   input,
   textarea,
