@@ -6,53 +6,17 @@ import {
   primaryBackgroundColor,
   primaryColor,
   primaryTextColor,
-} from "./colors"
+} from "../style/colors"
+import { FlatButton } from "../style/FlatButton"
+import { flexColumn, flexGrow, flexRow } from "../style/flex"
+import { fullHeight, spacedGrid } from "../style/helpers"
 
-const flexRow = css`
-  display: flex;
-  flex-flow: row;
-`
-
-const flexColumn = css`
-  display: flex;
-  flex-flow: column;
-`
-
-const flexGrow = css`
-  flex: 1;
-`
-
-const fullHeight = css`
-  height: 100vh;
-`
-
-const spacedGrid = css`
-  display: grid;
-  grid-gap: 1rem;
-  padding: 1rem;
-`
-
-const flatButtonStyle = css`
-  padding: 0.5rem;
-  opacity: 0.5;
-  transition: 0.2s;
-
-  :focus,
-  :hover {
-    outline: none;
-    opacity: 1;
-  }
-
-  :active {
-    transform: translateY(2px);
-    transition: none;
-  }
-`
 const pageBodyStyle = css`
   background: ${primaryBackgroundColor};
   overflow-y: auto;
 `
-const animeListItem = css`
+
+const trackedAnimeEntry = css`
   align-items: center;
   background-color: ${primaryColor};
   padding: 0.5rem;
@@ -62,38 +26,23 @@ const animeListItem = css`
 
 function SidebarAction() {
   return (
-    <button css={flatButtonStyle}>
+    <FlatButton>
       <Icon size={1.5} path={mdiSettings} color={primaryTextColor} />
-    </button>
+    </FlatButton>
   )
 }
 
 function TrackedAnimeEntry() {
   return (
-    <article css={[flexRow, animeListItem]}>
-      <span
-        css={[
-          flexGrow,
-          css`
-            padding: 0.5rem;
-          `,
-        ]}
-      >
-        Cute Anime
-      </span>
-      <span
-        css={css`
-          padding: 0.5rem;
-        `}
-      >
-        5 / 6
-      </span>
-      <button css={flatButtonStyle}>
+    <article css={[flexRow, trackedAnimeEntry]}>
+      <span css={[flexGrow, { padding: "0.5rem" }]}>Cute Anime</span>
+      <span css={{ padding: "0.5rem" }}>5 / 6</span>
+      <FlatButton>
         <Icon size={1} path={mdiCheckCircle} color={primaryTextColor} />
-      </button>
-      <button css={flatButtonStyle}>
+      </FlatButton>
+      <FlatButton>
         <Icon size={1} path={mdiSettings} color={primaryTextColor} />
-      </button>
+      </FlatButton>
     </article>
   )
 }
