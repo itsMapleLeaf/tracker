@@ -1,5 +1,5 @@
 import { css } from "@emotion/core"
-import { mdiCheckCircle, mdiSettings } from "@mdi/js"
+import { mdiCheckCircle, mdiSettings, mdiTrashCan } from "@mdi/js"
 import Icon from "@mdi/react"
 import React from "react"
 import {
@@ -22,6 +22,8 @@ const trackedAnimeEntry = css`
   padding: 0.5rem;
   max-width: 500px;
   margin: 0 auto;
+
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
 `
 
 function SidebarAction() {
@@ -42,6 +44,9 @@ function TrackedAnimeEntry() {
       </FlatButton>
       <FlatButton>
         <Icon size={1} path={mdiSettings} color={primaryTextColor} />
+      </FlatButton>
+      <FlatButton>
+        <Icon size={1} path={mdiTrashCan} color={primaryTextColor} />
       </FlatButton>
     </article>
   )
