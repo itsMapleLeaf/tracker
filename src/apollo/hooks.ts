@@ -22,5 +22,6 @@ export function useQuery<T = { [key: string]: any }>(
   return {
     data: result && result.data,
     error: result && result.errors,
+    isLoading,
   }
 }
