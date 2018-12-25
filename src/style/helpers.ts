@@ -9,3 +9,8 @@ export const spacedGrid = css`
   grid-gap: 1rem;
   padding: 1rem;
 `
+
+export const scrollVertical = css`
+  overflow-y: auto;
+  transform: translateZ(0);
+`

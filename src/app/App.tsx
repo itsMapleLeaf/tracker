@@ -3,20 +3,11 @@ import { mdiCheckCircle, mdiPlus, mdiSettings, mdiTrashCan } from "@mdi/js"
 import gql from "graphql-tag"
 import React from "react"
 import { useQuery } from "../apollo/hooks"
-import {
-  primaryBackgroundColor,
-  primaryColor,
-  primaryTextColor,
-} from "../style/colors"
+import { primaryColor, primaryTextColor } from "../style/colors"
 import FlatButton from "../style/FlatButton"
 import { flexColumn, flexGrow, flexRow } from "../style/flex"
-import { fullHeight, spacedGrid } from "../style/helpers"
+import { fullHeight, scrollVertical, spacedGrid } from "../style/helpers"
 import Icon from "../style/Icon"
-
-const pageBodyStyle = css`
-  background: ${primaryBackgroundColor};
-  overflow-y: auto;
-`
 
 const trackedAnimeEntry = css`
   align-items: center;
@@ -49,28 +40,11 @@ function TrackedAnimeEntry() {
 const pageQuery = gql`
   {
     Page(page: 0, perPage: 20) {
-      pageInfo {
-        total
-        perPage
-        currentPage
-        lastPage
-        hasNextPage
-      }
       media(type: ANIME, season: WINTER, seasonYear: 2019) {
         id
         title {
           english
           romaji
-        }
-        description
-        type
-        status
-        episodes
-        duration
-        nextAiringEpisode {
-          id
-          episode
-          timeUntilAiring
         }
         coverImage {
           large
@@ -84,35 +58,20 @@ const pageQuery = gql`
 `
 
 function App() {
-  // useEffect(() => {
-  //   client
-  //     .query({
-  //       query: pageQuery,
-  //     })
-  //     .then(console.log)
-  // }, [])
-
-  const { data } = useQuery(pageQuery)
-  console.log({ data })
+  const { data, isLoading } = useQuery(pageQuery)
 
   return (
-    <main css={[flexRow, fullHeight]}>
-      {/* <aside css={flexColumn}>
-        <SidebarAction icon={mdiViewList} />
-        <SidebarAction icon={mdiMagnify} />
-        <SidebarAction icon={mdiInformation} />
-      </aside> */}
-      <section css={[flexGrow, pageBodyStyle]}>
-        {data ? (
-          <ul css={[spacedGrid]}>
-            {data.Page.media.map((media: any) => (
-              <li key={media.id}>
-                <AnimeSummaryCard anime={media} />
-              </li>
-            ))}
-          </ul>
-        ) : null}
-      </section>
+    <main css={[fullHeight]}>
+      {isLoading && <p>Loading...</p>}
+      {data ? (
+        <ul css={[spacedGrid]}>
+          {data.Page.media.map((media: any) => (
+            <li key={media.id}>
+              <AnimeSummaryCard anime={media} />
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </main>
   )
 }
@@ -138,23 +97,11 @@ function AnimeSummaryCard({ anime }: { anime: { [key: string]: any } }) {
     background-color: ${primaryColor};
   `
 
-  const bannerImageStyle = css`
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.5;
-  `
-
   const coverImageStyle = css`
     height: 100%;
     max-height: 200px;
     min-width: 150px;
     object-fit: cover;
-  `
-
-  const infoStyle = css`
-    padding: 0.5rem;
   `
 
   const titleStyle = css`
@@ -170,30 +117,22 @@ function AnimeSummaryCard({ anime }: { anime: { [key: string]: any } }) {
 
   return (
     <article css={[flexRow, container]}>
-      {/* {anime.bannerImage && (
-        <img
-          css={bannerImageStyle}
-          src={anime.bannerImage}
-          role="presentation"
-        />
-      )} */}
       <img
         css={coverImageStyle}
         src={anime.coverImage.large}
         role="presentation"
       />
-      <div css={[infoStyle, flexGrow, flexColumn]}>
-        <h3 css={titleStyle}>{anime.title.romaji}</h3>
-        <span css={titleAltStyle}>{anime.title.english}</span>
-        <span css={titleAltStyle}>{anime.format}</span>
-        <span css={titleAltStyle}>{anime.genres.join(", ")}</span>
-        <div css={flexGrow} />
+      <div css={[flexGrow, flexColumn]}>
+        <div css={[flexGrow, scrollVertical, { padding: "0.5rem" }]}>
+          <h3 css={titleStyle}>{anime.title.romaji}</h3>
+          <p css={titleAltStyle}>{anime.title.english}</p>
+          <p css={titleAltStyle}>{anime.format}</p>
+          <p css={titleAltStyle}>{anime.genres.join(", ")}</p>
+        </div>
         <FlatButton>
           <Icon name={mdiPlus} size={1} />
         </FlatButton>
       </div>
-      {/* <div css={[flexColumn, { justifyContent: "center" }]}>
-      </div> */}
     </article>
   )
 }

@@ -1,5 +1,5 @@
 import { css } from "@emotion/core"
-import { primaryColor, primaryTextColor } from "./colors"
+import { primaryBackgroundColor, primaryTextColor } from "./colors"
 
 export default css`
   * {
@@ -11,7 +11,7 @@ export default css`
 
   :root {
     font: 16px Roboto;
-    background: ${primaryColor};
+    background: ${primaryBackgroundColor};
     color: ${primaryTextColor};
   }
 
