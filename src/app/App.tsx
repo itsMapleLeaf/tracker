@@ -18,59 +18,11 @@ import {
 } from "../style/helpers"
 import Icon from "../style/Icon"
 
-const trackedAnimeEntry = css`
-  align-items: center;
-  background-color: ${primaryColor};
-  padding: 0.5rem;
-  max-width: 500px;
-  margin: 0 auto;
-
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
-`
-
-function TrackedAnimeEntry() {
-  return (
-    <article css={[flexRow, trackedAnimeEntry]}>
-      <span css={[flexGrow, { padding: "0.5rem" }]}>Cute Anime</span>
-      <span css={{ padding: "0.5rem" }}>5 / 6</span>
-      <FlatButton>
-        <Icon size={1} name={mdiCheckCircle} color={primaryTextColor} />
-      </FlatButton>
-      <FlatButton>
-        <Icon size={1} name={mdiSettings} color={primaryTextColor} />
-      </FlatButton>
-      <FlatButton>
-        <Icon size={1} name={mdiTrashCan} color={primaryTextColor} />
-      </FlatButton>
-    </article>
-  )
+export default function App() {
+  return <UpcomingAnimePage />
 }
 
-const pageQuery = gql`
-  query UpcomingAnimeQuery($page: Int!) {
-    Page(page: $page, perPage: 20) {
-      pageInfo {
-        currentPage
-        hasNextPage
-      }
-      media(type: ANIME, season: WINTER, seasonYear: 2019) {
-        id
-        title {
-          english
-          romaji
-        }
-        coverImage {
-          large
-        }
-        bannerImage
-        genres
-        format
-      }
-    }
-  }
-`
-
-function App() {
+function UpcomingAnimePage() {
   const client = useClient()
   const [pages, setPages] = useState<UpcomingAnimeQuery.Page[]>([])
 
@@ -84,7 +36,7 @@ function App() {
       UpcomingAnimeQuery.Query,
       UpcomingAnimeQuery.Variables
     >({
-      query: pageQuery,
+      query: upcomingAnimeQuery,
       variables: { page: prevPageNum + 1 },
     })
 
@@ -123,13 +75,39 @@ function App() {
   )
 }
 
-function SidebarAction(props: { icon: string }) {
-  return (
-    <FlatButton>
-      <Icon size={1.5} name={props.icon} color={primaryTextColor} />
-    </FlatButton>
-  )
-}
+const upcomingAnimeQuery = gql`
+  query UpcomingAnimeQuery($page: Int!) {
+    Page(page: $page, perPage: 20) {
+      pageInfo {
+        currentPage
+        hasNextPage
+      }
+      media(type: ANIME, season: WINTER, seasonYear: 2019) {
+        id
+        title {
+          english
+          romaji
+        }
+        coverImage {
+          large
+        }
+        bannerImage
+        genres
+        format
+      }
+    }
+  }
+`
+
+const trackedAnimeEntry = css`
+  align-items: center;
+  background-color: ${primaryColor};
+  padding: 0.5rem;
+  max-width: 500px;
+  margin: 0 auto;
+
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+`
 
 function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
   const coverImage = idx(media, (_) => _.coverImage.large)
@@ -190,4 +168,20 @@ function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
   )
 }
 
-export default App
+function TrackedAnimeEntry() {
+  return (
+    <div css={[flexRow, trackedAnimeEntry]}>
+      <span css={[flexGrow, { padding: "0.5rem" }]}>Cute Anime</span>
+      <span css={{ padding: "0.5rem" }}>5 / 6</span>
+      <FlatButton>
+        <Icon size={1} name={mdiCheckCircle} color={primaryTextColor} />
+      </FlatButton>
+      <FlatButton>
+        <Icon size={1} name={mdiSettings} color={primaryTextColor} />
+      </FlatButton>
+      <FlatButton>
+        <Icon size={1} name={mdiTrashCan} color={primaryTextColor} />
+      </FlatButton>
+    </div>
+  )
+}
