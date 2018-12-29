@@ -1,5 +1,6 @@
 import { css } from "@emotion/core"
 import { mdiCheckCircle, mdiPlus, mdiSettings, mdiTrashCan } from "@mdi/js"
+import { Link, Redirect, RouteComponentProps, Router } from "@reach/router"
 import gql from "graphql-tag"
 import idx from "idx"
 import React, { useEffect, useState } from "react"
@@ -19,10 +20,27 @@ import {
 import Icon from "../style/Icon"
 
 export default function App() {
-  return <UpcomingAnimePage />
+  return (
+    <main>
+      <nav>
+        <Link to="/upcoming">Upcoming</Link>
+        {" | "}
+        <Link to="/tracked">Tracked</Link>
+      </nav>
+      <Router>
+        <Redirect from="/" to="/upcoming" />
+        <UpcomingAnimePage path="/upcoming" />
+        <NotFoundPage default />
+      </Router>
+    </main>
+  )
 }
 
-function UpcomingAnimePage() {
+function NotFoundPage(props: RouteComponentProps) {
+  return <p>Page not found :(</p>
+}
+
+function UpcomingAnimePage(props: RouteComponentProps) {
   const client = useClient()
   const [pages, setPages] = useState<UpcomingAnimeQuery.Page[]>([])
 
