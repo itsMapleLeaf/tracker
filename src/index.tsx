@@ -18,5 +18,5 @@ function renderApp() {
 
 renderApp()
 if (module.hot) {
-  module.hot.accept(renderApp)
+  module.hot.accept("./app/App", renderApp)
 }
