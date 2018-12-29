@@ -8,7 +8,14 @@ import { UpcomingAnimeQuery } from "../generated/graphql"
 import { primaryColor, primaryTextColor } from "../style/colors"
 import FlatButton from "../style/FlatButton"
 import { flexGrow, flexRow } from "../style/flex"
-import { fullHeight, spacedGrid } from "../style/helpers"
+import {
+  anchorBottom,
+  coveredBackgroundImage,
+  fillArea,
+  fullHeight,
+  shadeBg,
+  spacedGrid,
+} from "../style/helpers"
 import Icon from "../style/Icon"
 
 const trackedAnimeEntry = css`
@@ -131,20 +138,6 @@ function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
   const genres = media.genres || []
   const format = media.format
 
-  const fillArea = css`
-    width: 100%;
-    height: 100%;
-    position: absolute;
-  `
-
-  const coveredBackgroundImage = (url?: string) => css`
-    background-image: url(${url});
-    background-size: cover;
-    background-position: center;
-  `
-
-  const semiBlack = (opacity = 0.5) => `rgba(0, 0, 0, ${opacity})`
-
   const container = css`
     width: 100%;
     height: 100%;
@@ -155,17 +148,6 @@ function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
 
     background-color: ${primaryColor};
     ${coverImage && coveredBackgroundImage(coverImage)};
-  `
-
-  const shadeBg = css`
-    background-color: ${semiBlack(0.75)};
-  `
-
-  const anchorBottom = css`
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
   `
 
   const infoContainerStyle = css`
@@ -190,7 +172,9 @@ function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
       <div css={[flexRow, anchorBottom, shadeBg]}>
         <div css={[infoContainerStyle, flexGrow]}>
           <h3 css={titleStyle}>{title}</h3>
+
           {titleAlt !== title && <div css={infoLineStyle}>{titleAlt}</div>}
+
           <div css={infoLineStyle}>
             {[format, genres.join(", ")].filter(Boolean).join(" - ")}
           </div>
