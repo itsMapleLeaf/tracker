@@ -99,7 +99,7 @@ function UpcomingAnimePage(props: RouteComponentProps) {
     grid-template-columns: repeat(auto-fill, 320px);
     grid-auto-rows: 450px;
     justify-content: center;
-    max-width: 1200px;
+    max-width: 1500px;
     margin: 0 auto;
   `
 
