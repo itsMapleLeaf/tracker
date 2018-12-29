@@ -3,7 +3,6 @@ import {
   mdiCheckCircle,
   mdiPlaylistCheck,
   mdiPlus,
-  mdiSettings,
   mdiTrashCan,
   mdiViewDashboard,
 } from "@mdi/js"
@@ -42,10 +41,22 @@ export default function App() {
           ${dropShadow};
         `}
       >
-        <Link to="/upcoming" css={navLinkStyle}>
+        <Link
+          to="/upcoming"
+          css={navLinkStyle}
+          getProps={({ isCurrent }) => ({
+            style: { opacity: isCurrent ? 1 : 0.5 },
+          })}
+        >
           <Icon name={mdiViewDashboard} />
         </Link>
-        <Link to="/tracked" css={navLinkStyle}>
+        <Link
+          to="/tracked"
+          css={navLinkStyle}
+          getProps={({ isCurrent }) => ({
+            style: { opacity: isCurrent ? 1 : 0.5 },
+          })}
+        >
           <Icon name={mdiPlaylistCheck} />
         </Link>
       </nav>
@@ -53,6 +64,7 @@ export default function App() {
         <Router>
           <Redirect from="/" to="/upcoming" />
           <UpcomingAnimePage path="/upcoming" />
+          <TrackedAnimePage path="/tracked" />
           <NotFoundPage default />
         </Router>
       </section>
@@ -217,6 +229,28 @@ function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
   )
 }
 
+function TrackedAnimePage(props: RouteComponentProps) {
+  return (
+    <ul css={{ display: "grid", gridGap: "1rem", padding: "1rem" }}>
+      <li>
+        <TrackedAnimeEntry />
+      </li>
+      <li>
+        <TrackedAnimeEntry />
+      </li>
+      <li>
+        <TrackedAnimeEntry />
+      </li>
+      <li>
+        <TrackedAnimeEntry />
+      </li>
+      <li>
+        <TrackedAnimeEntry />
+      </li>
+    </ul>
+  )
+}
+
 function TrackedAnimeEntry() {
   return (
     <div css={[flexRow, trackedAnimeEntry]}>
@@ -224,9 +258,6 @@ function TrackedAnimeEntry() {
       <span css={{ padding: "0.5rem" }}>5 / 6</span>
       <FlatButton>
         <Icon size={1} name={mdiCheckCircle} color={primaryTextColor} />
-      </FlatButton>
-      <FlatButton>
-        <Icon size={1} name={mdiSettings} color={primaryTextColor} />
       </FlatButton>
       <FlatButton>
         <Icon size={1} name={mdiTrashCan} color={primaryTextColor} />
