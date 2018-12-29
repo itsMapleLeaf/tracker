@@ -24,43 +24,31 @@ import {
   shadeBg,
 } from "../style/helpers"
 import Icon from "../style/Icon"
+import NavLink from "./NavLink"
 
 export default function App() {
-  const navLinkStyle = css`
-    padding: 1rem;
-    display: inline-block;
+  const navStyle = css`
+    background-color: ${primaryColor};
+    z-index: 1;
+    ${dropShadow};
   `
 
   return (
     <main css={[flexColumn, fullHeight]}>
-      <nav
-        css={css`
-          background-color: ${primaryColor};
-          text-align: center;
-          z-index: 1;
-          ${dropShadow};
-        `}
-      >
-        <Link
-          to="/upcoming"
-          css={navLinkStyle}
-          getProps={({ isCurrent }) => ({
-            style: { opacity: isCurrent ? 1 : 0.5 },
-          })}
-        >
+      <nav css={[navStyle, flexRow, { alignItems: "center" }]}>
+        <Link to="/" css={[flexGrow, { padding: "1rem" }]}>
+          <h1>awesome anime tracker</h1>
+        </Link>
+
+        <NavLink to="/upcoming">
           <Icon name={mdiViewDashboard} />
-        </Link>
-        <Link
-          to="/tracked"
-          css={navLinkStyle}
-          getProps={({ isCurrent }) => ({
-            style: { opacity: isCurrent ? 1 : 0.5 },
-          })}
-        >
+        </NavLink>
+
+        <NavLink to="/tracked">
           <Icon name={mdiPlaylistCheck} />
-        </Link>
+        </NavLink>
       </nav>
-      <section css={[scrollVertical]}>
+      <section css={[scrollVertical, flexGrow]}>
         <Router>
           <Redirect from="/" to="/upcoming" />
           <UpcomingAnimePage path="/upcoming" />
@@ -116,7 +104,7 @@ function UpcomingAnimePage(props: RouteComponentProps) {
   `
 
   return (
-    <main css={[fullHeight]}>
+    <>
       <ul css={[animeCardListStyle]}>
         {pages.map((page) =>
           page.media!.map((media) => (
@@ -128,7 +116,7 @@ function UpcomingAnimePage(props: RouteComponentProps) {
       </ul>
 
       <button onClick={loadMediaItems}>load more</button>
-    </main>
+    </>
   )
 }
 
