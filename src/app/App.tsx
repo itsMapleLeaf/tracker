@@ -1,5 +1,12 @@
 import { css } from "@emotion/core"
-import { mdiCheckCircle, mdiPlus, mdiSettings, mdiTrashCan } from "@mdi/js"
+import {
+  mdiCheckCircle,
+  mdiPlaylistCheck,
+  mdiPlus,
+  mdiSettings,
+  mdiTrashCan,
+  mdiViewDashboard,
+} from "@mdi/js"
 import { Link, Redirect, RouteComponentProps, Router } from "@reach/router"
 import gql from "graphql-tag"
 import idx from "idx"
@@ -8,30 +15,47 @@ import { useClient } from "../apollo/hooks"
 import { UpcomingAnimeQuery } from "../generated/graphql"
 import { primaryColor, primaryTextColor } from "../style/colors"
 import FlatButton from "../style/FlatButton"
-import { flexGrow, flexRow } from "../style/flex"
+import { flexColumn, flexGrow, flexRow } from "../style/flex"
 import {
   anchorBottom,
   coveredBackgroundImage,
   fillArea,
   fullHeight,
+  scrollVertical,
   shadeBg,
-  spacedGrid,
 } from "../style/helpers"
 import Icon from "../style/Icon"
 
 export default function App() {
+  const navLinkStyle = css`
+    padding: 1rem;
+    display: inline-block;
+  `
+
   return (
-    <main>
-      <nav>
-        <Link to="/upcoming">Upcoming</Link>
-        {" | "}
-        <Link to="/tracked">Tracked</Link>
+    <main css={[flexColumn, fullHeight]}>
+      <nav
+        css={css`
+          background-color: ${primaryColor};
+          text-align: center;
+          z-index: 1;
+          ${dropShadow};
+        `}
+      >
+        <Link to="/upcoming" css={navLinkStyle}>
+          <Icon name={mdiViewDashboard} />
+        </Link>
+        <Link to="/tracked" css={navLinkStyle}>
+          <Icon name={mdiPlaylistCheck} />
+        </Link>
       </nav>
-      <Router>
-        <Redirect from="/" to="/upcoming" />
-        <UpcomingAnimePage path="/upcoming" />
-        <NotFoundPage default />
-      </Router>
+      <section css={[scrollVertical]}>
+        <Router>
+          <Redirect from="/" to="/upcoming" />
+          <UpcomingAnimePage path="/upcoming" />
+          <NotFoundPage default />
+        </Router>
+      </section>
     </main>
   )
 }
@@ -69,7 +93,10 @@ function UpcomingAnimePage(props: RouteComponentProps) {
   }, [])
 
   const animeCardListStyle = css`
-    grid-template-columns: repeat(auto-fill, 250px);
+    display: grid;
+    grid-gap: 2rem;
+    padding: 2rem;
+    grid-template-columns: repeat(auto-fill, 320px);
     grid-auto-rows: 450px;
     justify-content: center;
     max-width: 1200px;
@@ -78,7 +105,7 @@ function UpcomingAnimePage(props: RouteComponentProps) {
 
   return (
     <main css={[fullHeight]}>
-      <ul css={[spacedGrid, animeCardListStyle]}>
+      <ul css={[animeCardListStyle]}>
         {pages.map((page) =>
           page.media!.map((media) => (
             <li key={media!.id}>
@@ -117,6 +144,10 @@ const upcomingAnimeQuery = gql`
   }
 `
 
+const dropShadow = css`
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+`
+
 const trackedAnimeEntry = css`
   align-items: center;
   background-color: ${primaryColor};
@@ -124,7 +155,7 @@ const trackedAnimeEntry = css`
   max-width: 500px;
   margin: 0 auto;
 
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+  ${dropShadow};
 `
 
 function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
@@ -138,7 +169,7 @@ function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
     width: 100%;
     height: 100%;
 
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.25);
+    ${dropShadow};
 
     position: relative;
 
