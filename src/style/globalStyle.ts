@@ -15,6 +15,11 @@ export default css`
     color: ${primaryTextColor};
   }
 
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
   h1,
   h2,
   h3,
@@ -33,6 +38,7 @@ export default css`
     background: none;
     border: 0;
     font: inherit;
+    color: inherit;
   }
 
   ul {
