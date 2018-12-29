@@ -2,10 +2,14 @@ import { ApolloQueryResult } from "apollo-boost"
 import { useContext, useEffect, useState } from "react"
 import ApolloClientContext from "./ApolloClientContext"
 
-export function useQuery<Q, V>(query: any, variables: V, deps: unknown[] = []) {
+export function useClient() {
   const client = useContext(ApolloClientContext)
   if (!client) throw new Error("Client not found")
+  return client
+}
 
+export function useQuery<Q, V>(query: any, variables: V, deps: unknown[] = []) {
+  const client = useClient()
   const [isLoading, setLoading] = useState(true)
   const [result, setResult] = useState<ApolloQueryResult<Q>>()
 
