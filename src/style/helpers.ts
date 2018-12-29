@@ -6,7 +6,7 @@ export const fullHeight = css`
 
 export const spacedGrid = css`
   display: grid;
-  grid-gap: 1rem;
+  grid-gap: 2rem;
   padding: 1rem;
 `
 
