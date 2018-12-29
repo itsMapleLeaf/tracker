@@ -122,7 +122,7 @@ function UpcomingAnimePage(props: RouteComponentProps) {
 
 const upcomingAnimeQuery = gql`
   query UpcomingAnimeQuery($page: Int!) {
-    Page(page: $page, perPage: 20) {
+    Page(page: $page, perPage: 24) {
       pageInfo {
         currentPage
         hasNextPage
