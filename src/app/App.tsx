@@ -1,9 +1,8 @@
 import { css } from "@emotion/core"
 import { mdiCheckCircle, mdiPlus, mdiSettings, mdiTrashCan } from "@mdi/js"
 import gql from "graphql-tag"
-import idx from "idx"
-import React from "react"
-import { useQuery } from "../apollo/hooks"
+import React, { useEffect, useState } from "react"
+import { useClient } from "../apollo/hooks"
 import { UpcomingAnimeQuery } from "../generated/graphql"
 import { primaryColor, primaryTextColor } from "../style/colors"
 import FlatButton from "../style/FlatButton"
@@ -40,8 +39,12 @@ function TrackedAnimeEntry() {
 }
 
 const pageQuery = gql`
-  query UpcomingAnimeQuery {
-    Page(page: 0, perPage: 20) {
+  query UpcomingAnimeQuery($page: Int!) {
+    Page(page: $page, perPage: 20) {
+      pageInfo {
+        currentPage
+        hasNextPage
+      }
       media(type: ANIME, season: WINTER, seasonYear: 2019) {
         id
         title {
@@ -60,37 +63,46 @@ const pageQuery = gql`
 `
 
 function App() {
-  const { data, errors, isLoading } = useQuery<
-    UpcomingAnimeQuery.Query,
-    UpcomingAnimeQuery.Variables
-  >(pageQuery, {})
+  const client = useClient()
+  const [pages, setPages] = useState<UpcomingAnimeQuery.Page[]>([])
 
-  const media = idx(data, (_) => _.Page.media) || []
+  async function loadMediaItems() {
+    const prevPage = pages[pages.length - 1]
+    if (prevPage && !prevPage.pageInfo!.hasNextPage) return
+
+    const prevPageNum = (prevPage && prevPage.pageInfo!.currentPage) || -1
+
+    const result = await client.query<
+      UpcomingAnimeQuery.Query,
+      UpcomingAnimeQuery.Variables
+    >({
+      query: pageQuery,
+      variables: { page: prevPageNum + 1 },
+    })
+
+    const pageData = result.data.Page
+    if (!pageData) return
+
+    setPages([...pages, pageData])
+  }
+
+  useEffect(() => {
+    loadMediaItems()
+  }, [])
 
   return (
     <main css={[fullHeight]}>
-      {isLoading && <p>Loading...</p>}
-
-      {data ? (
-        <ul css={[spacedGrid]}>
-          {media.map((media: any) => (
-            <li key={media.id}>
-              <AnimeSummaryCard anime={media} />
+      <ul css={spacedGrid}>
+        {pages.map((page) =>
+          page.media!.map((media) => (
+            <li key={media!.id}>
+              <AnimeSummaryCard media={media!} />
             </li>
-          ))}
-        </ul>
-      ) : null}
+          )),
+        )}
+      </ul>
 
-      {errors && (
-        <>
-          <p>An error occurred:</p>
-          <ul>
-            {errors.map((error, i) => (
-              <li key={i}>{JSON.stringify(error)}</li>
-            ))}
-          </ul>
-        </>
-      )}
+      <button onClick={loadMediaItems}>load more</button>
     </main>
   )
 }
@@ -103,7 +115,7 @@ function SidebarAction(props: { icon: string }) {
   )
 }
 
-function AnimeSummaryCard({ anime }: { anime: { [key: string]: any } }) {
+function AnimeSummaryCard({ media }: { media: UpcomingAnimeQuery.Media }) {
   const container = css`
     height: 200px;
     max-width: 700px;
@@ -134,19 +146,22 @@ function AnimeSummaryCard({ anime }: { anime: { [key: string]: any } }) {
     font-style: italic;
   `
 
+  const title = (media.title && media.title.romaji) || "(unknown title)"
+  const titleAlt = (media.title && media.title.english) || title
+
   return (
     <article css={[flexRow, container]}>
       <img
         css={coverImageStyle}
-        src={anime.coverImage.large}
+        src={media.coverImage!.large!}
         role="presentation"
       />
       <div css={[flexGrow, flexColumn]}>
         <div css={[flexGrow, scrollVertical, { padding: "0.5rem" }]}>
-          <h3 css={titleStyle}>{anime.title.romaji}</h3>
-          <p css={titleAltStyle}>{anime.title.english}</p>
-          <p css={titleAltStyle}>{anime.format}</p>
-          <p css={titleAltStyle}>{anime.genres.join(", ")}</p>
+          <h3 css={titleStyle}>{title}</h3>
+          <p css={titleAltStyle}>{titleAlt}</p>
+          <p css={titleAltStyle}>{media.format}</p>
+          <p css={titleAltStyle}>{media.genres!.join(", ")}</p>
         </div>
         <FlatButton>
           <Icon name={mdiPlus} size={1} />

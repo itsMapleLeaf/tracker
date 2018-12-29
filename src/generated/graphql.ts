@@ -432,7 +432,9 @@ export type FuzzyDateInt = any
 // ====================================================
 
 export namespace UpcomingAnimeQuery {
-  export type Variables = {}
+  export type Variables = {
+    page: number
+  }
 
   export type Query = {
     __typename?: "Query"
@@ -443,7 +445,17 @@ export namespace UpcomingAnimeQuery {
   export type Page = {
     __typename?: "Page"
 
+    pageInfo: Maybe<PageInfo>
+
     media: Maybe<(Maybe<Media>)[]>
+  }
+
+  export type PageInfo = {
+    __typename?: "PageInfo"
+
+    currentPage: Maybe<number>
+
+    hasNextPage: Maybe<boolean>
   }
 
   export type Media = {
